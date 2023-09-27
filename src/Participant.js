@@ -55,7 +55,7 @@ const AjouterParticipant = () => {
                console.log('Données du participant à envoyer :', participantData);
                setIsLoading(true)
                axios
-               .post('http://localhost:4000/participants/', participantData, {headers:{ 'Content-Type': 'application/json'}})
+               .post('http://raissadiabate-simplon-project.web.app/participants/', participantData, {headers:{ 'Content-Type': 'application/json'}})
                .then((response) => {
                     setIsError(false)
                     setIsSuccess(true)

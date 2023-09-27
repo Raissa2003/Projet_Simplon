@@ -10,7 +10,7 @@ const ListeParticipant = () => {
 
     // ajouter un produit
      useEffect(() =>{
-        axios.get('http://localhost:5000/api/participant')
+        axios.get('http://raissadiabate-simplon-project.web.app/participant')
         .then((response)=>  {
           setPartcipant(response.data);
           // console.log(participant);
