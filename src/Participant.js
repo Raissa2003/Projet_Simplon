@@ -17,6 +17,7 @@ const AjouterParticipant = () => {
       // eslint-disable-next-line
      const [isError, setIsError] = useState(false);
      const [isSuccess, setIsSuccess] = useState(false);
+     const [isLoading, setIsLoading] = useState(false);
      const [error, setError] = useState(null);
      const [message, setMessage] = useState(null);
      //eslint-disable-next-line
@@ -39,40 +40,48 @@ const AjouterParticipant = () => {
                // La réponse de l'API est disponible, vous pouvez effectuer des actions en conséquence ici.
                console.log('Réponse de l\'API :', apiResponse);
           }
-          if (error) {
-               setError("Erreur lors de l'ajout du participant")
-          }
-     }, [apiResponse, error])
+          // if (error) {
+          //      setError("Erreur lors de l'ajout du participant")
+          // }
+     }, [apiResponse])
 
      const onSubmit = (e) => {
           e.preventDefault();
 
-          console.log('Données du participant à envoyer :', participantData);
-
-          axios
-          .post('http://localhost:4000/participants/', participantData, {headers:{ 'Content-Type': 'application/json'}})
-          .then((response) => {
-               setIsError(false)
-               setIsSuccess(true)
-               setMessage("Participant enregistré(e) avec succès !")
-               setError("")
-               console.log('Réponse de l\'API :', response.data);
-               setParticipantData({
-                    nom:"",
-                    prenom: '',
-                    mail: "",
-                    num_tel: ""
-               })
-               // ...
-          })
-          .catch((err) => {
+          if(!!!participantData?.nom || !!!participantData?.prenom){
+               setError("Les champs nom et prenom sont obligatoire")
                setIsError(true)
-               setIsSuccess(false)
-               setError("Erreur lors de l'ajout du participant")
-               setMessage("")
-               console.error('Erreur lors de l\'ajout du participant :', err);
-               // ...
-          });
+          }else{
+               console.log('Données du participant à envoyer :', participantData);
+               setIsLoading(true)
+               axios
+               .post('http://localhost:4000/participants/', participantData, {headers:{ 'Content-Type': 'application/json'}})
+               .then((response) => {
+                    setIsError(false)
+                    setIsSuccess(true)
+                    setMessage("Participant enregistré(e) avec succès !")
+                    setError("")
+                    setIsLoading(false)
+                    console.log('Réponse de l\'API :', response.data);
+                    setParticipantData({
+                         nom:"",
+                         prenom: '',
+                         mail: "",
+                         num_tel: ""
+                    })
+                    // ...
+               })
+               .catch((err) => {
+                    setIsError(true)
+                    setIsSuccess(false)
+                    setError("Erreur lors de l'ajout du participant")
+                    setMessage("")
+                    setIsLoading(false)
+                    console.error('Erreur lors de l\'ajout du participant :', err);
+                    // ...
+               });
+          }
+          
      };
 
      return (
@@ -89,6 +98,7 @@ const AjouterParticipant = () => {
                     <div className='login'>
                          {isError && <div className="alert alert-danger">{error}</div>}
                          {isSuccess && <div className="alert alert-success">{message}</div>}
+                         {isLoading && <div className="text-bold">Veillez patienter svp ...</div>}
                          <div className='needs-validation'>
                               <div className="row">
                                    <div className='form-group mb-2 col'>
